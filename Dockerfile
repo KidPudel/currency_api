@@ -24,4 +24,4 @@ RUN pip install --no-cache ./wheels/*
 
 EXPOSE 8000
 
-CMD sh -c "uvicorn main:app --host 127.0.0.1 --port 8000 & nginx -g 'daemon off'"
+CMD sh -c "uvicorn main:app --host 127.0.0.1 --port 8000 & nginx -g 'daemon off;'"
