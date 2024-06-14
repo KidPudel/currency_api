@@ -6,6 +6,8 @@ import json
 
 import aiohttp
 
+import constants
+
 
 app = FastAPI()
 
@@ -29,9 +31,15 @@ async def currency_rate_handler(
             "success": False,
             "error_msg": "you must provide both sides, from_currency and to_currency, as well as amount"
         }
+    if from_currency not in constants.CURRENCIES or to_currency not in constants.CURRENCIES:
+        return {
+            "success": False,
+            "error_msg": "not available currency"
+        }
     
     async with aiohttp.ClientSession() as session:
         async with session.get(f"https://cash.rbc.ru/cash/json/converter_currency_rate/?currency_from={from_currency}&currency_to={to_currency}&source=cbrf&sum={amount}&date=") as currency_response:
+
             raw_json_response = await currency_response.json()
             json_str_response = json.dumps(raw_json_response)
             currency = CurrencyModel.model_validate_json(json_data=json_str_response)
