@@ -67,4 +67,3 @@ async def currency_rate_handler(
                 "to": to_currency
             }
 
-
