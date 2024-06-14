@@ -5,7 +5,7 @@ Developed with:
 - FastAPI
 - aiohttp
 - pydantic
-- selenium
+- selenium (for scraping relevant currencies)
 
 > Full list is in `requirements.txt`
 
