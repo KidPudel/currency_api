@@ -20,18 +20,24 @@ def root():
     }
 
 
-def make_proper_currency_code(currency: Annotated[str, Query(..., description="currency code like USD, EUR, etc.")]):
+def make_proper_currency_code(currency: str):
     currency = currency.upper()
     if currency == "RUB":
         currency == "RUR"
     return currency
+
+def adjust_from_currency(from_currency: Annotated[str, Query(..., description="currency code from which to translate like USD, EUR, etc.")]):
+    return make_proper_currency_code(currency=from_currency)
+
+def adjust_to_currency(to_currency: Annotated[str, Query(..., description="currency code to translate to like USD, EUR, etc.")]):
+    return make_proper_currency_code(currency=to_currency)
     
 
 
 @app.get("/currency-rate", description="get the currency rate of 'convert_to' based on 'convert_from'")
 async def currency_rate_handler(
-    from_currency: Annotated[str, Depends(make_proper_currency_code)], 
-    to_currency: Annotated[str, Depends(make_proper_currency_code)], 
+    from_currency: Annotated[str, Depends(adjust_from_currency)], 
+    to_currency: Annotated[str, Depends(adjust_to_currency)], 
     amount: Annotated[int, Query(..., description="the amount of from_currency")]
 ):
 
