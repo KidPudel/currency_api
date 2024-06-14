@@ -34,6 +34,3 @@ async def currency_rate_handler(
                 "success": True,
                 "currency_rate": json
             }
-            
-  
-    
