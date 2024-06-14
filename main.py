@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Query
 from typing import Annotated
 from pydantic_models import CurrencyModel
+import json
 
 
 import aiohttp
@@ -31,8 +32,8 @@ async def currency_rate_handler(
     
     async with aiohttp.ClientSession() as session:
         async with session.get(f"https://cash.rbc.ru/cash/json/converter_currency_rate/?currency_from={from_currency}&currency_to={to_currency}&source=cbrf&sum={amount}&date=") as currency_response:
-            json = await currency_response.json()
-            currency = CurrencyModel.model_validate_json(json_data=json)
+            json_str = await json.dumps(currency_response.json())
+            currency = CurrencyModel.model_validate_json(json_data=json_str)
             if currency.status == 200:
                 return {
                     "success": True,
