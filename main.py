@@ -23,7 +23,7 @@ def root():
 def make_proper_currency_code(currency: str):
     currency = currency.upper()
     if currency == "RUB":
-        currency == "RUR"
+        currency = "RUR"
     return currency
 
 def adjust_from_currency(from_currency: Annotated[str, Query(..., description="currency code from which to translate like USD, EUR, etc.")]):
