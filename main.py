@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Depends
 from typing import Annotated
 from pydantic_models import CurrencyModel
 import json
@@ -20,17 +20,21 @@ def root():
     }
 
 
+def make_proper_currency_code(currency: Annotated[str, Query(..., description="currency code like USD, EUR, etc.")]):
+    currency = currency.upper()
+    if currency == "RUB":
+        currency == "RUR"
+    return currency
+    
+
+
 @app.get("/currency-rate", description="get the currency rate of 'convert_to' based on 'convert_from'")
 async def currency_rate_handler(
-    from_currency: Annotated[str | None, Query(description="your currency you want to convert from")] = None, 
-    to_currency: Annotated[str | None, Query(description="currency you want to get value of")] = None, 
-    amount: Annotated[int | None, Query(description="the amount of from_currency")] = None
+    from_currency: Annotated[str, Depends(make_proper_currency_code)], 
+    to_currency: Annotated[str, Depends(make_proper_currency_code)], 
+    amount: Annotated[int, Query(..., description="the amount of from_currency")]
 ):
-    if from_currency == None or to_currency == None or amount == None:
-        return {
-            "success": False,
-            "error_msg": "you must provide both sides, from_currency and to_currency, as well as amount"
-        }
+
     if from_currency not in constants.CURRENCIES or to_currency not in constants.CURRENCIES:
         return {
             "success": False,
@@ -56,3 +60,5 @@ async def currency_rate_handler(
                 "from": from_currency,
                 "to": to_currency
             }
+
+
