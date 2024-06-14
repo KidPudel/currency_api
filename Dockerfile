@@ -18,7 +18,7 @@ COPY . .
 
 COPY default.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=build-stage /wheels .
+COPY --from=build-stage /wheels ./wheels
 
 RUN pip install --no-cache ./wheels/*
 
